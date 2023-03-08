@@ -130,7 +130,7 @@ public class Player : MonoBehaviour
         OnLookAny(value, handLeft);
     }
 
-    public void OnLookRight(InputValue value)
+    public void OnLookright(InputValue value)
     {
         OnLookAny(value, handRight);
     }
