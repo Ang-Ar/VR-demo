@@ -221,8 +221,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 5
   moveDamping: 0.02
-  lookDamping: 0.05
-  lookDeadZone: 30
+  lookSpeed: 90
+  lookDeadZone: 20
   head: {fileID: 963194227}
   handLeft: {fileID: 1975529530}
   handRight: {fileID: 861608064}

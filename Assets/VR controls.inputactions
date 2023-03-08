@@ -6,7 +6,7 @@
             "id": "ca29ea4a-64ac-4987-817b-4cc77315a78e",
             "actions": [
                 {
-                    "name": "Look",
+                    "name": "debug look",
                     "type": "Value",
                     "id": "b9e1304e-6c56-4a42-b753-eaca4cbba9cd",
                     "expectedControlType": "Vector2",
@@ -15,18 +15,9 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "look left",
+                    "name": "look",
                     "type": "Value",
                     "id": "548a24fe-f529-4507-955f-3b080d3ae770",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "look right",
-                    "type": "Value",
-                    "id": "f1890c4c-4244-4c72-9c97-27d324faf907",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -295,18 +286,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KBM",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4fee7607-7411-4826-aa19-db9cc9c31b09",
-                    "path": "<XRController>{LeftHand}/primaryButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Generic XR",
-                    "action": "look left",
+                    "action": "debug look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -317,18 +297,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KBM",
-                    "action": "look left",
+                    "action": "look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "8ff77075-e323-4b32-9e10-7d6340da2c7e",
-                    "path": "<XRController>{RightHand}/primaryButton",
+                    "id": "9803eed2-960a-4d5a-a905-30ec4dfacb26",
+                    "path": "<XRController>/primaryButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR",
-                    "action": "look right",
+                    "action": "look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

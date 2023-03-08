@@ -1,4 +1,5 @@
 using Oculus.Interaction.HandGrab;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,9 +19,7 @@ public class Player : MonoBehaviour
     private float moveDamping;
 
     [SerializeField]
-    [Range(0f, 1f)]
-    [Tooltip("unused")]
-    private float lookDamping;
+    private float lookSpeed;
     [SerializeField]
     [Tooltip("maximum angle in degrees between body and recentering hand")]
     private float lookDeadZone;
@@ -29,7 +28,9 @@ public class Player : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     private Vector3 wishVel = Vector3.zero;
 
-    private Hand cameraHand; 
+    private bool bodyRotation = false;
+    // in local space
+    private Vector3 neutralHeadDirection;
 
     [SerializeField]
     private Camera head;
@@ -63,15 +64,16 @@ public class Player : MonoBehaviour
         // move
         transform.position += velocity * Time.deltaTime;
 
-        if (cameraHand != null)
+        if (bodyRotation)
         {
-            Vector3 flatScaler = new Vector3(1, 0, 1);
-            Vector3 flatcurrent = Vector3.Scale(transform.forward, flatScaler);
-            Vector3 flatDesired = Vector3.Scale(cameraHand.transform.forward, flatScaler);
-            float rotationDefecit = Vector3.SignedAngle(flatcurrent, flatDesired, Vector3.up);
+            // amt of desired rotation is controlled by how far from the reference point the head has rotated
+            float rotationDefecit = YRotationDefecit(neutralHeadDirection, transform.InverseTransformDirection(head.transform.forward));
             if (Mathf.Abs(rotationDefecit) > lookDeadZone)
             {
-                transform.Rotate(0, rotationDefecit*Time.deltaTime, 0, Space.World);
+                // rotation speed scales with how far from the reference point the player is looking
+                float rotationSpeed = Mathf.InverseLerp(lookDeadZone, lookDeadZone+20, Mathf.Abs(rotationDefecit)) * lookSpeed;
+                rotationSpeed *= Mathf.Sign(rotationDefecit);
+                transform.Rotate(0, rotationSpeed*Time.deltaTime, 0, Space.World);
             }
         }
     }
@@ -80,24 +82,29 @@ public class Player : MonoBehaviour
 
     #region Input messages
 
-    /// only used for PC debugging
-    private void OnLook(InputValue value)
+    /// only used for PC debugging. Acts as a standard FPS camera.
+    private void OnDebuglook(InputValue value)
     {
         const float hSens = 0.25f;
         const float vSens = 0.25f;
         Vector2 lookDelta = value.Get<Vector2>();
 
         head.transform.Rotate(-lookDelta.y * vSens, 0, 0, Space.Self);
-        if (cameraHand == null)
+        head.transform.Rotate(0, lookDelta.x * hSens, 0, Space.World);
+        handLeft.transform.rotation = head.transform.rotation;
+        handRight.transform.rotation = head.transform.rotation;
+    }
+
+    /// VR button to enable camera movement
+    private void OnLook(InputValue value)
+    {
+        // enable body rotation in update
+        bodyRotation = value.Get<float>()> 0.5;
+        // TODO: instantaneous recenter on press (without affecting view)
+        if (bodyRotation)
         {
-            transform.Rotate(0, lookDelta.x * hSens, 0, Space.World);
-            handLeft.transform.rotation = head.transform.rotation;
-            handRight.transform.rotation = head.transform.rotation;
-        }
-        else
-        {
-            handLeft.transform.Rotate(0, lookDelta.x * hSens, 0, Space.World);
-            handRight.transform.Rotate(0, lookDelta.x * hSens, 0, Space.World);
+            float rotationDefecit = YRotationDefecit(transform.forward, head.transform.forward);
+            neutralHeadDirection = transform.InverseTransformDirection(head.transform.forward);
         }
     }
 
@@ -125,24 +132,6 @@ public class Player : MonoBehaviour
             hand.CancelTeleport();
     }
 
-    public void OnLookleft(InputValue value)
-    {
-        OnLookAny(value, handLeft);
-    }
-
-    public void OnLookright(InputValue value)
-    {
-        OnLookAny(value, handRight);
-    }
-
-    public void OnLookAny(InputValue value, Hand hand)
-    {
-        if (value.Get<float>() >= 0.5)
-            cameraHand = hand;
-        else
-            cameraHand = null;
-    }
-
     #endregion
 
     #region Custom methods
@@ -150,6 +139,11 @@ public class Player : MonoBehaviour
     public void TeleportTo(Vector3 position)
     {
         transform.position = position;
+    }
+
+    public float YRotationDefecit(Vector3 current, Vector3 target)
+    {
+        return Vector3.SignedAngle(new Vector3(current.x, 0, current.z), new Vector3(target.x, 0, target.z), Vector3.up);
     }
 
     #endregion
