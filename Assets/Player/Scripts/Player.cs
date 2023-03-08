@@ -69,8 +69,15 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        // definition of forward and right for use below (camera-relative movement)
+        // "with on structs" would be nice here: "Vector3 forward = head.transform.forward with {y=0};"
+        Vector3 forward = head.transform.forward;
+        forward.y = 0;
+        Vector3 right = head.transform.right;
+        right.y = 0;
+
         // convert input to a desired velocity in world space
-        wishVel = transform.forward * moveInput.y + transform.right * moveInput.x;
+        wishVel = forward * moveInput.y + right * moveInput.x;
         wishVel = wishVel.normalized * maxSpeed;
         // smooth movement
         velocity = Vector3.Lerp(velocity, wishVel, 1-Mathf.Pow(moveDamping, Time.deltaTime));
@@ -124,6 +131,9 @@ public class Player : MonoBehaviour
     /// VR: button to enable camera movement
     private void OnLookAny(InputValue value, Hand hand)
     {
+        // note: doesn't work great when using multiple buttons to control camera at the same time
+        // (realeasing either one will always cancel the other)
+
         // enable body rotation in update
         bodyRotation = value.Get<float>() > 0.5f;
 
@@ -190,6 +200,13 @@ public class Player : MonoBehaviour
             TeleportTo(hand.CommitTeleport());
         else
             hand.CancelTeleport();
+    }
+
+    private void OnMenu()
+    {
+        // tmp - cycle camera control methods for easy testing
+        controlSettings.lookDevice++;
+        controlSettings.lookDevice = (VrControlSettings.LookDevice)((int)controlSettings.lookDevice % 3);
     }
 
     #endregion

@@ -85,15 +85,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "recenter",
-                    "type": "Button",
-                    "id": "199dfacd-07aa-4d55-ab60-a3f7b136610f",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -341,17 +332,6 @@
                 },
                 {
                     "name": "",
-                    "id": "285359b6-422c-48a3-a85b-48e8f4c39990",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Generic XR",
-                    "action": "recenter",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "40e07336-c016-47fe-8f15-50e0e48c5720",
                     "path": "<XRController>{LeftHand}/primaryButton",
                     "interactions": "",
@@ -364,10 +344,21 @@
                 {
                     "name": "",
                     "id": "6e61c0ad-8f93-4952-bc84-5c31f28752b4",
-                    "path": "<XRController>/app",
+                    "path": "<XRController>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR",
+                    "action": "menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8ac29a97-1384-4817-9292-99e901c9480a",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KBM",
                     "action": "menu",
                     "isComposite": false,
                     "isPartOfComposite": false
