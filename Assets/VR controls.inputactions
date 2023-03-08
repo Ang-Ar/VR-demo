@@ -6,6 +6,15 @@
             "id": "ca29ea4a-64ac-4987-817b-4cc77315a78e",
             "actions": [
                 {
+                    "name": "menu",
+                    "type": "Button",
+                    "id": "e4a3c6b0-aaf2-49e3-97ab-ec713ba5e434",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "debug look",
                     "type": "Value",
                     "id": "b9e1304e-6c56-4a42-b753-eaca4cbba9cd",
@@ -15,7 +24,16 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "look",
+                    "name": "look left",
+                    "type": "Value",
+                    "id": "65e4d278-6ef1-4339-966d-19aa76952028",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "look right",
                     "type": "Value",
                     "id": "548a24fe-f529-4507-955f-3b080d3ae770",
                     "expectedControlType": "Button",
@@ -67,6 +85,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "recenter",
+                    "type": "Button",
+                    "id": "199dfacd-07aa-4d55-ab60-a3f7b136610f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -297,18 +324,51 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KBM",
-                    "action": "look",
+                    "action": "look right",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "9803eed2-960a-4d5a-a905-30ec4dfacb26",
-                    "path": "<XRController>/primaryButton",
+                    "path": "<XRController>{RightHand}/primaryButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR",
-                    "action": "look",
+                    "action": "look right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "285359b6-422c-48a3-a85b-48e8f4c39990",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR",
+                    "action": "recenter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "40e07336-c016-47fe-8f15-50e0e48c5720",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR",
+                    "action": "look left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6e61c0ad-8f93-4952-bc84-5c31f28752b4",
+                    "path": "<XRController>/app",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR",
+                    "action": "menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -7,8 +7,22 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.Windows;
 
+[System.Serializable]
+public class VrControlSettings
+{
+    public enum LookDevice { hands, headAbsolute, headRelative }
+    public enum Progress { smooth, stepped }
+
+    public LookDevice lookDevice;
+    public Progress lookProgress;
+
+    public Progress moveProgress;
+}
+
 public class Player : MonoBehaviour
 {
+    public VrControlSettings controlSettings = new();
+
     [SerializeField]
     [Tooltip("Not a hard cap, external forces can cause greater velocity")]
     private float maxSpeed;
@@ -25,12 +39,14 @@ public class Player : MonoBehaviour
     private float lookDeadZone;
 
     private Vector2 moveInput;
-    private Vector3 velocity = Vector3.zero;
     private Vector3 wishVel = Vector3.zero;
+    private Vector3 velocity = Vector3.zero;
 
     private bool bodyRotation = false;
     // in local space
-    private Vector3 neutralHeadDirection;
+    private Vector3 neutralAimDirection;
+    // used for hand-based camera controls only (see VrControlSettings)
+    private GameObject cameraAimDevice = null;
 
     [SerializeField]
     private Camera head;
@@ -66,8 +82,8 @@ public class Player : MonoBehaviour
 
         if (bodyRotation)
         {
-            // amt of desired rotation is controlled by how far from the reference point the head has rotated
-            float rotationDefecit = YRotationDefecit(neutralHeadDirection, transform.InverseTransformDirection(head.transform.forward));
+            // rotation is controlled by how far from the reference point the head has rotated
+            float rotationDefecit = YRotationDefecit(neutralAimDirection, transform.InverseTransformDirection(cameraAimDevice.transform.forward));
             if (Mathf.Abs(rotationDefecit) > lookDeadZone)
             {
                 // rotation speed scales with how far from the reference point the player is looking
@@ -95,17 +111,61 @@ public class Player : MonoBehaviour
         handRight.transform.rotation = head.transform.rotation;
     }
 
-    /// VR button to enable camera movement
-    private void OnLook(InputValue value)
+    private void OnLookleft(InputValue value)
+    {
+        OnLookAny(value, handLeft);
+    }
+
+    private void OnLookright(InputValue value)
+    {
+        OnLookAny(value, handRight);
+    }
+
+    /// VR: button to enable camera movement
+    private void OnLookAny(InputValue value, Hand hand)
     {
         // enable body rotation in update
-        bodyRotation = value.Get<float>()> 0.5;
-        // TODO: instantaneous recenter on press (without affecting view)
+        bodyRotation = value.Get<float>() > 0.5f;
+
+        // set the device controlling the rotation
         if (bodyRotation)
         {
-            float rotationDefecit = YRotationDefecit(transform.forward, head.transform.forward);
-            neutralHeadDirection = transform.InverseTransformDirection(head.transform.forward);
+            cameraAimDevice =
+                controlSettings.lookDevice == VrControlSettings.LookDevice.hands ?
+                hand.gameObject : head.gameObject;
         }
+        else
+        {
+            cameraAimDevice = null;
+        }
+
+        if (bodyRotation)
+        {
+            if (controlSettings.lookDevice == VrControlSettings.LookDevice.headAbsolute)
+                // camera rotates based on current "body" direction
+                neutralAimDirection = Vector3.forward;
+            else
+                // camera rotates based on initial look direction
+                neutralAimDirection = transform.InverseTransformDirection(head.transform.forward);
+        }
+    }
+
+    private void OnGrableft(InputValue value)
+    {
+        OnGrabAny(value, handLeft);
+    }
+
+    private void OnGrabright(InputValue value)
+    {
+        OnGrabAny(value, handRight);
+    }
+
+    private void OnGrabAny(InputValue value, Hand hand)
+    {
+        if (value.Get<float>() > 0.5)
+            hand.StartGrab();
+        else
+            hand.EndGrab();
     }
 
     private void OnMove(InputValue value)

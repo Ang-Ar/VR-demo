@@ -14,6 +14,9 @@ public class Hand : MonoBehaviour
 
     private Vector3 teleportTarget;
 
+    private Animator animator;
+    int animationFlexID;
+
     [SerializeField]
     GameObject targetPosIndicator;
     LineRenderer targetDirectionIndicator;
@@ -28,6 +31,12 @@ public class Hand : MonoBehaviour
         targetPosIndicator.SetActive(false);
         targetDirectionIndicator = GetComponent<LineRenderer>();
         targetDirectionIndicator.enabled = false;
+
+        animator = GetComponentInChildren<Animator>();
+        animationFlexID = Animator.StringToHash("Flex");
+        animator.SetFloat("Pinch", 0);
+        animator.SetFloat("Flex", 0);
+        animator.SetFloat("IndexSlide", 0);
     }
 
     private void Update()
@@ -80,5 +89,15 @@ public class Hand : MonoBehaviour
     public void CancelTeleport()
     {
         teleporting = false;
+    }
+
+    public void StartGrab()
+    {
+        animator.SetFloat(animationFlexID, 1);
+    }
+
+    public void EndGrab()
+    {
+        animator.SetFloat(animationFlexID, 0);
     }
 }
